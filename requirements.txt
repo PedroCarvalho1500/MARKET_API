@@ -30,7 +30,6 @@ pydantic-settings==2.10.1
 pydantic_core
 pydantic[email]
 pydub==0.25.1
-pygame==2.6.1
 PyJWT==2.3.0
 pytest==8.4.1
 pytest-html==4.1.1
