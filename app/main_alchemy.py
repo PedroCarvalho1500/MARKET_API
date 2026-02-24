@@ -15,6 +15,12 @@ from fastapi import FastAPI, HTTPException, Request
 from .database import get_db, SessionLocal, engine
 from .routers import market, products
 from jose import jwt, JWTError
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+
+
+templates = Jinja2Templates(directory="app/templates")
 #from .models import User, SessionModel
 import asyncio
 from fastapi.middleware.cors import CORSMiddleware
@@ -185,14 +191,10 @@ models.Base.metadata.create_all(bind=engine)
 
 # app.add_middleware(RBACMiddleware, sessionmaker=SessionLocal)
 
-@app.get("/")
-def home():
-    db = SessionLocal()
-    try:
-        db.execute(text('SELECT 1')) 
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Database connection failed: {e}")
-    return {"Welcome to the MARKET API!"}
+
+@app.get("/", response_class=HTMLResponse)
+async def home(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
 
 
