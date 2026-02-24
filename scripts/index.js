@@ -1,8 +1,8 @@
 
 
-//const API_BASE_URL = 'https://market-api-g8lp.onrender.com/';
+const API_BASE_URL = 'https://market-api-g8lp.onrender.com/';
 
-const API_BASE_URL = 'http://localhost:8000/';
+//const API_BASE_URL = 'http://localhost:8000/';
 
 const instance = axios.create({
   baseURL: API_BASE_URL,
