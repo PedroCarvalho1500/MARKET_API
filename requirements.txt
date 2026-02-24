@@ -16,3 +16,6 @@ requests
 SQLAlchemy==2.0.41
 urllib3==1.26.5
 uvicorn==0.15.0
+fastapi
+uvicorn
+jinja2
