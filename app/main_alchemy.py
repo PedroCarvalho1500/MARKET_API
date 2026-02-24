@@ -17,10 +17,21 @@ from .routers import market, products
 from jose import jwt, JWTError
 #from .models import User, SessionModel
 import asyncio
+from fastapi.middleware.cors import CORSMiddleware
 
+origins = [
+    "*"
+]
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 security = HTTPBearer()
 
