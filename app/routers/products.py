@@ -24,7 +24,7 @@ def get_products(db: Session = Depends(get_db),limit: int = 20, skip: int = 0, s
 
     try:
         products = db.query(models.Product).filter(
-            models.Product.name.like(f"{starts_by}%"),
+            models.Product.name.like(f"%{starts_by}%"),
         ).order_by(getattr(models.Product, order_by)).offset(skip).limit(limit).all()
         
         #I want to adjust the market name to get from the market relationship, not from the product table
