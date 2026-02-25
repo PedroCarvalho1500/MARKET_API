@@ -20,7 +20,7 @@ router = APIRouter(
 
  
 @router.get("/products", status_code=status.HTTP_200_OK,response_model=list[ProductResponse])
-def get_products(db: Session = Depends(get_db),limit: int = 20, skip: int = 0, starts_by: Optional[str] = "",l_country: Optional[str] = "", order_by: Optional[str] = "id", background_tasks: BackgroundTasks = None):
+def get_products(db: Session = Depends(get_db),limit: int = 20, skip: int = 0, starts_by: Optional[str] = "",l_country: Optional[str] = "", order_by: Optional[str] = "price", background_tasks: BackgroundTasks = None):
 
     try:
         products = db.query(models.Product).filter(
