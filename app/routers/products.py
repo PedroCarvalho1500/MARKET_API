@@ -83,33 +83,41 @@ async def create_product(product: ProductCreate, db: Session = Depends(get_db)):
 
 
 
-@router.put("/product/{product_id}", status_code=status.HTTP_200_OK)
-async def update_product(product_id: int, product: ProductUpdate, db: Session = Depends(get_db)):
-
+@router.put("/product/{product_id}", status_code=status.HTTP_200_OK, response_model=ProductResponse)
+def update_product(product: ProductUpdate,product_id: int,db: Session = Depends(get_db)):
     existing_product = db.query(models.Product).filter(models.Product.id == product_id).first()
     if not existing_product:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Product with id {product_id} not found"
         )
-    
-    # Update only the fields that are provided in the request
-    update_data = product.dict(exclude_unset=True)
-    for key, value in update_data.items():
-        setattr(existing_product, key, value)
-    
-    existing_product.updated_at = time.strftime("%Y-%m-%d %H:%M:%S")
-
+    # Update the fields
     try:
+        existing_product.name = product.name
+        existing_product.price = product.price
+        existing_product.updated_at = time.strftime("%Y-%m-%d %H:%M:%S")
+        if product.market:
+            market = db.query(models.Market).filter(models.Market.name.ilike(product.market)).first()
+            if not market:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Market '{product.market}' not found. Please create the market before updating the product."
+                )
+            existing_product.market = market
+        
         db.commit()
         db.refresh(existing_product)
+        return existing_product
+    
     except Exception as e:
+        db.rollback()
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error updating Product: {e}"
         )
-    
-    return existing_product
+    finally:
+        db.close()
+
 
 
 @router.delete("/product/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
